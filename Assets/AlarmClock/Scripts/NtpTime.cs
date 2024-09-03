@@ -8,7 +8,7 @@ namespace AlarmClock.Scripts
 {
     public static class NtpTime
     {
-        private const string NtpServer1 = "pool.ntp.org";
+        private const string NtpServer1 = "pool.ntp.org1";
         private const string NtpServer2 = "ntp3.ntp-servers.net";
         private const string NtpServer3 = "3.ru.pool.ntp.org";
 
@@ -30,22 +30,22 @@ namespace AlarmClock.Scripts
             
             var task = GetNetworkTimeFromNtp(NtpServer1);
             await task;
-            if (task.IsCompletedSuccessfully)
-                dateTime = task.Result;
+            if (task.Result.Item1)
+                dateTime = task.Result.Item2;
             else
             {
                 Debug.Log("err1");
                 task = GetNetworkTimeFromNtp(NtpServer2);
                 await task;
-                if (task.IsCompletedSuccessfully)
-                    dateTime = task.Result;
+                if (task.Result.Item1)
+                    dateTime = task.Result.Item2;
                 else
                 {
                     Debug.Log("err2");
                     task = GetNetworkTimeFromNtp(NtpServer3);
                     await task;
-                    if (task.IsCompletedSuccessfully)
-                        dateTime = task.Result;
+                    if (task.Result.Item1)
+                        dateTime = task.Result.Item2;
                     else
                         Debug.LogError("Cant connect to the ntp server");
                 }
@@ -55,7 +55,7 @@ namespace AlarmClock.Scripts
             return dateTime;
         }
         
-        private static async Task<DateTime> GetNetworkTimeFromNtp(string ntpServer)
+        private static async Task<(bool, DateTime)> GetNetworkTimeFromNtp(string ntpServer)
         {
             try
             {
@@ -99,12 +99,12 @@ namespace AlarmClock.Scripts
                 var milliseconds = (intPart * 1000) + ((fractPart * 1000) / 0x100000000L);
                 var networkDateTime = (new DateTime(1900, 1, 1)).AddMilliseconds((long)milliseconds);
 
-                return networkDateTime;
+                return (true, networkDateTime);
             }
             catch (Exception e)
             {
-                Debug.LogError($"Ошибка при получении NTP времени: {e.Message}");
-                return DateTime.UtcNow; // В случае ошибки возвращаем текущее локальное время
+                Debug.LogError($"Exception while try to take time from the npt server: {e}");
+                return (false, new DateTime());
             }
         }
     }
