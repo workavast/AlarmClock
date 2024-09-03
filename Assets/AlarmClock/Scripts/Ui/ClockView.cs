@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace AlarmClock.Scripts
+namespace AlarmClock.Scripts.Ui
 {
     public class ClockView : MonoBehaviour
     {
@@ -10,11 +10,20 @@ namespace AlarmClock.Scripts
         
         private ClockTimeProvider _clockTimeProvider;
 
-        private void Start()
+        private void Awake() 
+            => _clockTimeProvider = FindObjectOfType<ClockTimeProvider>();
+
+        private void OnEnable()
         {
-            _clockTimeProvider = FindObjectOfType<ClockTimeProvider>();
             _clockTimeProvider.ClockTime.OnTick += UpdateView;
+            UpdateView();
         }
+
+        private void OnDisable() 
+            => _clockTimeProvider.ClockTime.OnTick -= UpdateView;
+
+        private void OnDestroy() 
+            => _clockTimeProvider.ClockTime.OnTick -= UpdateView;
 
         private void UpdateView()
         {
