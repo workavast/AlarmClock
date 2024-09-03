@@ -4,21 +4,21 @@ namespace AlarmClock.Scripts
 {
     public class ClockTimeProvider : MonoBehaviour
     {
-        public ClockTime ClockTime { get; private set; } = new();
+        public readonly ClockTime ClockTime = new();
 
-        private float _secCounter;
+        private float _secondsCounter;
 
         private async void Awake() 
-            => ClockTime.UpdateTime(await NtpTime.GetNetworkTime());
+            => ClockTime.SetTime(await NtpTime.GetNetworkTime());
 
         private void Update()
         {
-            _secCounter += Time.unscaledDeltaTime;
+            _secondsCounter += Time.unscaledDeltaTime;
 
-            if (_secCounter > 1)
+            if (_secondsCounter > 1)
             {
-                var secs = (int)_secCounter;
-                _secCounter -= secs;
+                var secs = (int)_secondsCounter;
+                _secondsCounter -= secs;
                 ClockTime.AddSeconds(secs);
             }
         }

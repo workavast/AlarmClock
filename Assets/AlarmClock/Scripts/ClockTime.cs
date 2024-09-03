@@ -4,13 +4,25 @@ namespace AlarmClock.Scripts
 {
     public class ClockTime
     {
+        private const int SecondsInDay = 24 * 60 * 60;
+        private const int SecondsInHour = 60 * 60;
+        private const int SecondsInMinute = 60;
+        
         public int Hours;
         public int Minutes;
         public int Seconds;
 
+        public float FullDayPercentage => (float)TotalSeconds / SecondsInDay;
+        public float HourPercentage => (float)(SecondsInMinutes + Seconds) / SecondsInHour;
+        public float MinutePercentage => (float)Seconds / SecondsInMinute;
+        
+        public int TotalSeconds => SecondsInHours + SecondsInMinutes + Seconds;
+        public int SecondsInHours => Hours * 60 * 60;
+        public int SecondsInMinutes => Minutes * 60;
+        
         public event Action OnTick;
 
-        public void UpdateTime(ClockTime clockTime)
+        public void SetTime(ClockTime clockTime)
         {
             Hours = clockTime.Hours;
             Minutes = clockTime.Minutes;
@@ -57,9 +69,7 @@ namespace AlarmClock.Scripts
             OnTick?.Invoke();
         }
         
-        public override string ToString()
-        {
-            return $"{Hours}:{Minutes}:{Seconds}";
-        }
+        public override string ToString() 
+            => $"{Hours}:{Minutes}:{Seconds}";
     }
 }
