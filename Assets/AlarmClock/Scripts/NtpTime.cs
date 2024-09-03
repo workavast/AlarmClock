@@ -52,7 +52,7 @@ namespace AlarmClock.Scripts
             
             return dateTime;
         }
-        
+
         /// <returns>
         ///     Item1 - request is success <br/>
         ///     Item2 - DateTime from the NTP server
@@ -64,39 +64,38 @@ namespace AlarmClock.Scripts
                 var ntpData = new byte[48];
                 ntpData[0] = 0x1B; //LeapIndicator = 0 (no warning), VersionNum = 3 (IPv4 only), Mode = 3 (Client Mode)
 
-                var task = Dns.GetHostAddressesAsync(ntpServer);
-                await task;
-                if (!task.IsCompletedSuccessfully)
-                    throw new Exception(task.Exception?.Message);
+                var getHostAddressesTask = Dns.GetHostAddressesAsync(ntpServer);
+                await getHostAddressesTask;
+                if (!getHostAddressesTask.IsCompletedSuccessfully)
+                    throw new Exception($"Some problem with getHostAddressesTask: {getHostAddressesTask.Exception?.Message}");
 
-                var addresses = task.Result;
+                var addresses = getHostAddressesTask.Result;
                 var ipEndPoint = new IPEndPoint(addresses[0], 123);
 
-                using (var socket =  new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
+                using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
                 {
                     socket.SendTimeout = 100;
-                    socket.ReceiveTimeout = 100;
-                    
+
                     var connectTask = socket.ConnectAsync(ipEndPoint);
                     await connectTask;
                     if (!connectTask.IsCompletedSuccessfully)
-                        throw new Exception(connectTask.Exception?.Message);
+                        throw new Exception($"Some problem with connectTask: {connectTask.Exception?.Message}");
 
                     var sendTask = socket.SendAsync(new ArraySegment<byte>(ntpData), SocketFlags.None);
                     await sendTask;
                     if (!sendTask.IsCompletedSuccessfully)
-                        throw new Exception(sendTask.Exception?.Message);
-                    
+                        throw new Exception($"Some problem with sendTask: {sendTask.Exception?.Message}");
+
                     var receiveTask = socket.ReceiveAsync(new ArraySegment<byte>(ntpData), SocketFlags.None);
-                    await receiveTask;
+                    await Task.WhenAny(receiveTask, Task.Delay(100)); //socket.ReceiveTimeout doesnt work with socket.ReceiveAsync(...)
                     if (!receiveTask.IsCompletedSuccessfully)
-                        throw new Exception(receiveTask.Exception?.Message);
+                        throw new Exception($"Some problem with receiveTask: {receiveTask.Exception?.Message}");
                 }
 
                 var intPart = (ulong)ntpData[40] << 24 | (ulong)ntpData[41] << 16 | (ulong)ntpData[42] << 8 |
-                                (ulong)ntpData[43];
+                              (ulong)ntpData[43];
                 var fractPart = (ulong)ntpData[44] << 24 | (ulong)ntpData[45] << 16 | (ulong)ntpData[46] << 8 |
-                                  (ulong)ntpData[47];
+                                (ulong)ntpData[47];
 
                 var milliseconds = (intPart * 1000) + ((fractPart * 1000) / 0x100000000L);
                 var networkDateTime = (new DateTime(1900, 1, 1)).AddMilliseconds((long)milliseconds);
