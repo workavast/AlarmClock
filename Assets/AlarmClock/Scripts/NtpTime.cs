@@ -8,7 +8,8 @@ namespace AlarmClock.Scripts
 {
     public static class NtpTime
     {
-        private const string NtpServer1 = "pool.ntp.org1";
+        private const string NtpServer1 = "pool.ntp.org1";//invalid ntp address for demonstration of
+                                                          //full work of this class (valid address is pool.ntp.org)
         private const string NtpServer2 = "ntp3.ntp-servers.net";
         private const string NtpServer3 = "3.ru.pool.ntp.org";
 
@@ -34,27 +35,28 @@ namespace AlarmClock.Scripts
                 dateTime = task.Result.Item2;
             else
             {
-                Debug.Log("err1");
                 task = GetNetworkTimeFromNtp(NtpServer2);
                 await task;
                 if (task.Result.Item1)
                     dateTime = task.Result.Item2;
                 else
                 {
-                    Debug.Log("err2");
                     task = GetNetworkTimeFromNtp(NtpServer3);
                     await task;
                     if (task.Result.Item1)
                         dateTime = task.Result.Item2;
                     else
-                        Debug.LogError("Cant connect to the ntp server");
+                        Debug.LogError("Cant connect to the any ntp server");
                 }
             }
             
-            Debug.Log(dateTime);
             return dateTime;
         }
         
+        /// <returns>
+        ///     Item1 - request is success <br/>
+        ///     Item2 - DateTime from the NTP server
+        /// </returns>
         private static async Task<(bool, DateTime)> GetNetworkTimeFromNtp(string ntpServer)
         {
             try
@@ -91,9 +93,9 @@ namespace AlarmClock.Scripts
                         throw new Exception(receiveTask.Exception?.Message);
                 }
 
-                ulong intPart = (ulong)ntpData[40] << 24 | (ulong)ntpData[41] << 16 | (ulong)ntpData[42] << 8 |
+                var intPart = (ulong)ntpData[40] << 24 | (ulong)ntpData[41] << 16 | (ulong)ntpData[42] << 8 |
                                 (ulong)ntpData[43];
-                ulong fractPart = (ulong)ntpData[44] << 24 | (ulong)ntpData[45] << 16 | (ulong)ntpData[46] << 8 |
+                var fractPart = (ulong)ntpData[44] << 24 | (ulong)ntpData[45] << 16 | (ulong)ntpData[46] << 8 |
                                   (ulong)ntpData[47];
 
                 var milliseconds = (intPart * 1000) + ((fractPart * 1000) / 0x100000000L);
