@@ -17,7 +17,7 @@ namespace AlarmClock.Scripts.Ui
             _screensController = FindObjectOfType<ScreensController>();
         }
 
-        private void ToggleScreen() 
+        private void ToggleScreen()
             => _screensController.SetScreen(screenType);
     }
 }

@@ -27,9 +27,18 @@ namespace AlarmClock.Scripts
         public ClockTime() 
             => InitialUnixSeconds = CurrentUnixSeconds = 0;
 
-        public ClockTime(long initialUnixSeconds) 
+        public ClockTime(long initialUnixSeconds)
             => InitialUnixSeconds = CurrentUnixSeconds = initialUnixSeconds;
 
+        public void SetTime(long initialUnixSeconds, ClockTime clockTime)
+        {
+            InitialUnixSeconds = CurrentUnixSeconds = initialUnixSeconds;
+            Hours = clockTime.Hours;
+            Minutes = clockTime.Minutes;
+            Seconds = clockTime.Seconds;
+            OnTick?.Invoke();
+        }
+        
         public void SetTime(ClockTime clockTime)
         {
             InitialUnixSeconds = clockTime.InitialUnixSeconds;
