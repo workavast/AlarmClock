@@ -17,7 +17,8 @@ namespace AlarmClock.Scripts
         {
             var dateTime = await GetNetworkDateTime();
 
-            return new ClockTime()
+            var unixTime = ((DateTimeOffset)dateTime).ToUnixTimeSeconds();
+            return new ClockTime(unixTime)
             {
                 Hours = dateTime.Hour,
                 Minutes = dateTime.Minute,

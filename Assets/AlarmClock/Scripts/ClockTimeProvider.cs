@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace AlarmClock.Scripts
@@ -8,9 +9,22 @@ namespace AlarmClock.Scripts
 
         private float _secondsCounter;
 
-        private async void Awake() 
-            => ClockTime.SetTime(await NtpTime.GetNetworkTime());
+        public bool IsInitialized { get; private set; }
+        public event Action OnInitialized;
 
+        private void Awake()
+            => Initialize();
+
+        private async void Initialize()
+        {
+            ClockTime.SetTime(await NtpTime.GetNetworkTime());
+            if (!IsInitialized)
+            {
+                IsInitialized = true;
+                OnInitialized?.Invoke();
+            }
+        }
+        
         private void Update()
         {
             _secondsCounter += Time.unscaledDeltaTime;
@@ -28,6 +42,12 @@ namespace AlarmClock.Scripts
         {
             var res = await NtpTime.GetNetworkTime();
             Debug.Log(res.ToString());
+
+            if (!IsInitialized)
+            {
+                IsInitialized = true;
+                OnInitialized?.Invoke();
+            }
         }
     }
 }
