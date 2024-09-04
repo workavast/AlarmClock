@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using AlarmClock.Scripts.Ui;
 using UnityEngine;
 
 namespace Avastrad.UI.UiSystem
@@ -32,9 +33,9 @@ namespace Avastrad.UI.UiSystem
             switch (screenType)
             {
                 case ScreenType.ClockScreen:
-                    // return GetScreen<>();
+                    return GetScreen<ClockScreen>();
                 case ScreenType.AlarmScreen:
-                    // return GetScreen<>();
+                    return GetScreen<AlarmClockScreen>();
                 default:
                     throw new ArgumentOutOfRangeException($"invalid parameter: {screenType}");
             }

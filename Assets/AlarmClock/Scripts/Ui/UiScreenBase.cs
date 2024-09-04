@@ -1,12 +1,14 @@
+using System;
+using Avastrad.UI.UiSystem;
 using UnityEngine;
 
 namespace AlarmClock.Scripts.Ui
 {
-    public abstract class UiScreenBase : MonoBehaviour
+    public abstract class UiScreenBase : ScreenBase
     {
         [SerializeField] private Canvas portraitCanvas;
         [SerializeField] private Canvas landscapeCanvas;
-        
+
         public void ChangeOrientation(ScreenOrientation newScreenOrientation)
         {
             portraitCanvas.gameObject.SetActive(false);
