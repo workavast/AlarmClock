@@ -27,7 +27,7 @@ namespace AlarmClock.Scripts.Ui
 
         private void UpdateView()
         {
-            RotateArrow(hourArrow, _clockTimeProvider.ClockTime.FullDayPercentage / 2);
+            RotateArrow(hourArrow, _clockTimeProvider.ClockTime.FullDayPercentage * 2);
             RotateArrow(minuteArrow, _clockTimeProvider.ClockTime.HourPercentage);
             RotateArrow(secondArrow, _clockTimeProvider.ClockTime.MinutePercentage);
         }
