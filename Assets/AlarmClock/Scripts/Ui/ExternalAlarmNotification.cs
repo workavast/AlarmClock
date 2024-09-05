@@ -26,7 +26,7 @@ namespace AlarmClock.Scripts.Ui
             if (!hasFocus)
             {
                 if (!_notificationIsSend) 
-                    SendExternalNotification();
+                    TrySendExternalNotification();
             }
             else
             {
@@ -38,9 +38,17 @@ namespace AlarmClock.Scripts.Ui
         private void OnApplicationQuit()
         {
             if(!_notificationIsSend)
-                SendExternalNotification();
+                TrySendExternalNotification();
         }
 
+        private void TrySendExternalNotification()
+        {
+            if (!_alarmClockProvider.IsActive)
+                return;
+            
+            SendExternalNotification();
+        }
+        
         private void SendExternalNotification()
         {
             var channel = new AndroidNotificationChannel()
