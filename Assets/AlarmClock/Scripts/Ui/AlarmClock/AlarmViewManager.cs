@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace AlarmClock.Scripts.Ui
+namespace AlarmClock.Scripts.Ui.AlarmClock
 {
     public class AlarmViewManager : MonoBehaviour
     {
@@ -9,15 +9,15 @@ namespace AlarmClock.Scripts.Ui
         [SerializeField] private Button cancelAlarm;
         
         [SerializeField] private AlarmInputFields alarmInputFields;
-        [SerializeField] private AlarmClockView alarmClockView;
+        [SerializeField] private AlarmClockInput alarmClockInput;
      
-        private PrepareAlarmClock _prepareAlarmClock;
-        private AlarmClock _alarmClock;
+        private PrepareAlarmClockProvider _prepareAlarmClockProvider;
+        private Scripts.AlarmClockProvider _alarmClockProvider;
         
         private void Awake()
         {
-            _alarmClock = FindObjectOfType<AlarmClock>();
-            _prepareAlarmClock = FindObjectOfType<PrepareAlarmClock>();
+            _alarmClockProvider = FindObjectOfType<Scripts.AlarmClockProvider>();
+            _prepareAlarmClockProvider = FindObjectOfType<PrepareAlarmClockProvider>();
             
             applyAlarm.onClick.AddListener(OnApplyAlarm);
             cancelAlarm.onClick.AddListener(OnCancelAlarm);
@@ -26,18 +26,18 @@ namespace AlarmClock.Scripts.Ui
 
         private void OnEnable()
         {
-            ToggleButtons(_alarmClock.IsActive);
-            _alarmClock.OnActivationStateChange += UpdateView;
+            ToggleButtons(_alarmClockProvider.IsActive);
+            _alarmClockProvider.OnActivationStateChange += UpdateView;
         }
 
         private void OnDisable()
         {
-            _alarmClock.OnActivationStateChange -= UpdateView;
+            _alarmClockProvider.OnActivationStateChange -= UpdateView;
         }
 
         private void UpdateView()
         {
-            ToggleButtons(_alarmClock.IsActive);
+            ToggleButtons(_alarmClockProvider.IsActive);
         }
 
         private void ToggleButtons(bool alarmIsActive)
@@ -46,16 +46,17 @@ namespace AlarmClock.Scripts.Ui
             cancelAlarm.gameObject.SetActive(alarmIsActive);
             
             alarmInputFields.ToggleState(!alarmIsActive);
+            alarmClockInput.ToggleState(!alarmIsActive);
         }
         
         private void OnApplyAlarm()
         {
-            _alarmClock.SetAlarm(_prepareAlarmClock.PreparedAlarmTime);
+            _alarmClockProvider.SetAlarm(_prepareAlarmClockProvider.PreparedAlarmTime);
         }
         
         private void OnCancelAlarm()
         {
-            _alarmClock.CancelAlarm();
+            _alarmClockProvider.CancelAlarm();
         }
     }
 }

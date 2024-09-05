@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace AlarmClock.Scripts.Ui
+namespace AlarmClock.Scripts.Ui.MainClock
 {
     [RequireComponent(typeof(TMP_Text))]
     public class ClockTimeTextView : MonoBehaviour

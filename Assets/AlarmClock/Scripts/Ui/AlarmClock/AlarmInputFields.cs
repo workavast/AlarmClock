@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace AlarmClock.Scripts.Ui
+namespace AlarmClock.Scripts.Ui.AlarmClock
 {
     public class AlarmInputFields : MonoBehaviour
     {
@@ -9,16 +9,16 @@ namespace AlarmClock.Scripts.Ui
         [SerializeField] private TMP_InputField minutesInput;
         [SerializeField] private TMP_InputField secondsInput;
 
-        private AlarmClock _alarmClock;
-        private PrepareAlarmClock _prepareAlarmClock;
+        private AlarmClockProvider _alarmClock;
+        private PrepareAlarmClockProvider _prepareAlarmClockProvider;
         private InputState _inputState;
         private ViewState _viewState;
 
         public void Initialize()
         {
-            _alarmClock = FindObjectOfType<AlarmClock>();
-            _prepareAlarmClock = FindObjectOfType<PrepareAlarmClock>();
-            _inputState = new InputState(_prepareAlarmClock, hoursInput, minutesInput, secondsInput);
+            _alarmClock = FindObjectOfType<AlarmClockProvider>();
+            _prepareAlarmClockProvider = FindObjectOfType<PrepareAlarmClockProvider>();
+            _inputState = new InputState(_prepareAlarmClockProvider, hoursInput, minutesInput, secondsInput);
             _viewState = new ViewState(_alarmClock, hoursInput, minutesInput, secondsInput);
         }
 
@@ -55,12 +55,12 @@ namespace AlarmClock.Scripts.Ui
         
         private class ViewState : AlarmInputFieldsState
         {
-            private readonly AlarmClock _alarmClock;
+            private readonly AlarmClockProvider _alarmClockProvider;
 
-            public ViewState(AlarmClock alarmClock, TMP_InputField hoursInput, TMP_InputField minutesInput, TMP_InputField secondsInput) 
+            public ViewState(AlarmClockProvider alarmClockProvider, TMP_InputField hoursInput, TMP_InputField minutesInput, TMP_InputField secondsInput) 
                 : base( hoursInput,  minutesInput, secondsInput)
             {
-                _alarmClock = alarmClock;
+                _alarmClockProvider = alarmClockProvider;
             }
 
             public override void ToggleActivity(bool isActive)
@@ -71,22 +71,22 @@ namespace AlarmClock.Scripts.Ui
                 IsActive = isActive;
                 if (isActive)
                 {
-                    _alarmClock.TargetTime.OnTick += PrintTime;
+                    _alarmClockProvider.TargetTime.OnTick += PrintTime;
                 
                     ToggleInteractive(false);
                     PrintTime();
                 }
                 else
                 {
-                    _alarmClock.TargetTime.OnTick -= PrintTime;
+                    _alarmClockProvider.TargetTime.OnTick -= PrintTime;
                 }
             }
             
             private void PrintTime()
             {
-                PrintTime(HoursInput, _alarmClock.TargetTime.Hours);
-                PrintTime(MinutesInput, _alarmClock.TargetTime.Minutes);
-                PrintTime(SecondsInput, _alarmClock.TargetTime.Seconds);
+                PrintTime(HoursInput, _alarmClockProvider.TargetTime.Hours);
+                PrintTime(MinutesInput, _alarmClockProvider.TargetTime.Minutes);
+                PrintTime(SecondsInput, _alarmClockProvider.TargetTime.Seconds);
             }
 
             private static void PrintTime(TMP_InputField inputField, int value)
@@ -101,13 +101,13 @@ namespace AlarmClock.Scripts.Ui
 
         private class InputState : AlarmInputFieldsState
         {
-            private readonly PrepareAlarmClock _prepareAlarmClock;
+            private readonly PrepareAlarmClockProvider _prepareAlarmClockProvider;
 
-            public InputState(PrepareAlarmClock prepareAlarmClock, TMP_InputField hoursInput, 
+            public InputState(PrepareAlarmClockProvider prepareAlarmClockProvider, TMP_InputField hoursInput, 
                 TMP_InputField minutesInput, TMP_InputField secondsInput) 
                 : base( hoursInput,  minutesInput, secondsInput)
             {
-                _prepareAlarmClock = prepareAlarmClock;
+                _prepareAlarmClockProvider = prepareAlarmClockProvider;
             }
             
             public override void ToggleActivity(bool isActive)
@@ -119,7 +119,7 @@ namespace AlarmClock.Scripts.Ui
                 
                 if (isActive)
                 {
-                    _prepareAlarmClock.PreparedAlarmTime.OnTick += PrintTime;
+                    _prepareAlarmClockProvider.PreparedAlarmTime.OnTick += PrintTime;
                 
                     HoursInput.onValueChanged.AddListener(OnUpdateInput);
                     MinutesInput.onValueChanged.AddListener(OnUpdateInput);
@@ -139,9 +139,9 @@ namespace AlarmClock.Scripts.Ui
             
             private void PrintTime()
             {
-                PrintTime(HoursInput, _prepareAlarmClock.PreparedAlarmTime.Hours);
-                PrintTime(MinutesInput, _prepareAlarmClock.PreparedAlarmTime.Minutes);
-                PrintTime(SecondsInput, _prepareAlarmClock.PreparedAlarmTime.Seconds);
+                PrintTime(HoursInput, _prepareAlarmClockProvider.PreparedAlarmTime.Hours);
+                PrintTime(MinutesInput, _prepareAlarmClockProvider.PreparedAlarmTime.Minutes);
+                PrintTime(SecondsInput, _prepareAlarmClockProvider.PreparedAlarmTime.Seconds);
             }
 
             private static void PrintTime(TMP_InputField inputField, int value)
@@ -175,8 +175,8 @@ namespace AlarmClock.Scripts.Ui
                 var clockTime = new ClockTime();
                 clockTime.AddHours(int.Parse(HoursInput.text));
                 clockTime.AddMinutes(int.Parse(MinutesInput.text));
-                clockTime.AddSeconds(int.Parse(SecondsInput.text));
-                _prepareAlarmClock.PreparedAlarmTime.SetTime(clockTime);
+                clockTime.ChangeSeconds(int.Parse(SecondsInput.text));
+                _prepareAlarmClockProvider.PreparedAlarmTime.SetTime(clockTime);
             }
         }
         #endregion

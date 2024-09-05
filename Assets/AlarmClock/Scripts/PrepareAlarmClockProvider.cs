@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace AlarmClock.Scripts.Ui
+namespace AlarmClock.Scripts
 {
-    public class PrepareAlarmClock : MonoBehaviour
+    public class PrepareAlarmClockProvider : MonoBehaviour
     {
         public readonly ClockTime PreparedAlarmTime = new();
         

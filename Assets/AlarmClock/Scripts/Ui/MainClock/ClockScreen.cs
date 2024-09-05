@@ -1,4 +1,4 @@
-namespace AlarmClock.Scripts.Ui
+namespace AlarmClock.Scripts.Ui.MainClock
 {
     public class ClockScreen : UiScreenBase
     {

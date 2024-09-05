@@ -1,4 +1,3 @@
-using System;
 using Avastrad.UI.UiSystem;
 using UnityEngine;
 

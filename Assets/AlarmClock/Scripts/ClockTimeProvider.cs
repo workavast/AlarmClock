@@ -33,7 +33,7 @@ namespace AlarmClock.Scripts
             {
                 var secs = (int)_secondsCounter;
                 _secondsCounter -= secs;
-                ClockTime.AddSeconds(secs);
+                ClockTime.ChangeSeconds(secs);
             }
         }
 

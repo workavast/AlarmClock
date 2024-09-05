@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using AlarmClock.Scripts.Ui;
+using AlarmClock.Scripts.Ui.AlarmClock;
+using AlarmClock.Scripts.Ui.MainClock;
 using UnityEngine;
 
 namespace Avastrad.UI.UiSystem

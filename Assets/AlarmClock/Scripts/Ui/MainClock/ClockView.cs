@@ -1,35 +1,35 @@
 using UnityEngine;
 
-namespace AlarmClock.Scripts.Ui
+namespace AlarmClock.Scripts.Ui.MainClock
 {
-    public class AlarmClockView : MonoBehaviour
+    public class ClockView : MonoBehaviour
     {
         [SerializeField] private GameObject hourArrow;
         [SerializeField] private GameObject minuteArrow;
         [SerializeField] private GameObject secondArrow;
         
-        private AlarmClock _clockTimeProvider;
+        private ClockTimeProvider _clockTimeProvider;
 
         private void Awake() 
-            => _clockTimeProvider = FindObjectOfType<AlarmClock>();
+            => _clockTimeProvider = FindObjectOfType<ClockTimeProvider>();
 
         private void OnEnable()
         {
-            _clockTimeProvider.TargetTime.OnTick += UpdateView;
+            _clockTimeProvider.ClockTime.OnTick += UpdateView;
             UpdateView();
         }
 
         private void OnDisable() 
-            => _clockTimeProvider.TargetTime.OnTick -= UpdateView;
+            => _clockTimeProvider.ClockTime.OnTick -= UpdateView;
 
         private void OnDestroy() 
-            => _clockTimeProvider.TargetTime.OnTick -= UpdateView;
+            => _clockTimeProvider.ClockTime.OnTick -= UpdateView;
 
         private void UpdateView()
         {
-            RotateArrow(hourArrow, _clockTimeProvider.TargetTime.FullDayPercentage * 2);
-            RotateArrow(minuteArrow, _clockTimeProvider.TargetTime.HourPercentage);
-            RotateArrow(secondArrow, _clockTimeProvider.TargetTime.MinutePercentage);
+            RotateArrow(hourArrow, _clockTimeProvider.ClockTime.FullDayPercentage * 2);
+            RotateArrow(minuteArrow, _clockTimeProvider.ClockTime.HourPercentage);
+            RotateArrow(secondArrow, _clockTimeProvider.ClockTime.MinutePercentage);
         }
 
         private static void RotateArrow(GameObject arrow, float clockPercentage)

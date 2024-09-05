@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace AlarmClock.Scripts
 {
-    public class AlarmClock : MonoBehaviour
+    public class AlarmClockProvider : MonoBehaviour
     {
         [SerializeField] private int hours;
         [SerializeField] private int minutes;
@@ -29,10 +29,6 @@ namespace AlarmClock.Scripts
         {
             _clockTimeProvider.OnInitialized -= Initialize;
             _clockTimeProvider.ClockTime.OnTick += CheckAlarm;
-
-            // var alarm = new ClockTime();
-            // alarm.AddSeconds(hours * 60 * 60 + minutes * 60);
-            // SetAlarm(alarm);
         }
         
         public void SetAlarm(ClockTime alarmClock)
