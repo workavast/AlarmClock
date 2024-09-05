@@ -5,10 +5,10 @@ using UnityEngine.UI;
 namespace AlarmClock.Scripts.Ui
 {
     [RequireComponent(typeof(Button))]
-    public class ScreenToggleButton : MonoBehaviour
+    public class ScreenSetButton : MonoBehaviour
     {
         [SerializeField] private ScreenType screenType;
-    
+
         private ScreensController _screensController;
         
         private void Awake()
@@ -16,8 +16,8 @@ namespace AlarmClock.Scripts.Ui
             GetComponent<Button>().onClick.AddListener(ToggleScreen);
             _screensController = FindObjectOfType<ScreensController>();
         }
-    
+
         private void ToggleScreen()
-            => _screensController.ToggleScreen(screenType);
+            => _screensController.SetScreen(screenType);
     }
 }

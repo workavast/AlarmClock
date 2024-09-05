@@ -4,5 +4,6 @@ namespace Avastrad.UI.UiSystem
     {
         ClockScreen = 0,
         AlarmScreen = 10,
+        AlarmNotificationScreen = 20
     }
 }

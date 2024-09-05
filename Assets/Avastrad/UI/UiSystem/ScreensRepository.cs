@@ -38,6 +38,8 @@ namespace Avastrad.UI.UiSystem
                     return GetScreen<ClockScreen>();
                 case ScreenType.AlarmScreen:
                     return GetScreen<AlarmClockScreen>();
+                case ScreenType.AlarmNotificationScreen:
+                    return GetScreen<AlarmNotificationScreen>();
                 default:
                     throw new ArgumentOutOfRangeException($"invalid parameter: {screenType}");
             }

@@ -34,6 +34,13 @@ namespace Avastrad.UI.UiSystem
             ToggleScreen(screenType, true);
         }
         
+        public void ToggleScreen(ScreenType screenType)
+        {
+            var screen = _screenRepository.GetScreen(screenType);
+            var show = !screen.isActiveAndEnabled;
+            TryToggleScreen(screen, show);
+        }
+        
         public void ToggleScreen(ScreenType screenType, bool show)
         {
             var screen = _screenRepository.GetScreen(screenType);
