@@ -8,11 +8,15 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
         [SerializeField] private ClockArrow minuteArrow;
         [SerializeField] private ClockArrow secondArrow;
         
-        private Scripts.AlarmClockProvider _alarmClockProvider;
-
-        private void Awake()
+        private AlarmClockProvider _alarmClockProvider;
+        private PrepareAlarmClockProvider _prepareAlarmClockProvider;
+        private bool IsInputState;
+        
+        public void Initialize()
         {
-            _alarmClockProvider = FindObjectOfType<Scripts.AlarmClockProvider>();
+            _alarmClockProvider = FindObjectOfType<AlarmClockProvider>();
+            _prepareAlarmClockProvider = FindObjectOfType<PrepareAlarmClockProvider>();
+            
             hourArrow.Initialize();
             minuteArrow.Initialize();
             secondArrow.Initialize();
@@ -32,16 +36,27 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
 
         public void ToggleState(bool inputState)
         {
+            if (IsInputState == inputState)
+                return;
+
+            IsInputState = inputState;
             hourArrow.Interactable = inputState;
             minuteArrow.Interactable = inputState;
             secondArrow.Interactable = inputState;
+            UpdateView();
         }
         
         private void UpdateView()
         {
-            RotateArrow(hourArrow.gameObject, _alarmClockProvider.TargetTime.FullDayPercentage * 2);
-            RotateArrow(minuteArrow.gameObject, _alarmClockProvider.TargetTime.HourPercentage);
-            RotateArrow(secondArrow.gameObject, _alarmClockProvider.TargetTime.MinutePercentage);
+            ClockTime clockTime;
+            if (IsInputState)
+                clockTime = _prepareAlarmClockProvider.PreparedAlarmTime;
+            else
+                clockTime = _alarmClockProvider.TargetTime;
+            
+            RotateArrow(hourArrow.gameObject, clockTime.FullDayPercentage * 2);
+            RotateArrow(minuteArrow.gameObject, clockTime.HourPercentage);
+            RotateArrow(secondArrow.gameObject, clockTime.MinutePercentage);
         }
 
         private static void RotateArrow(GameObject arrow, float clockPercentage)

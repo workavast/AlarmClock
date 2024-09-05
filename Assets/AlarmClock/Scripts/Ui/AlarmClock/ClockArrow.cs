@@ -70,7 +70,7 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
             if (secondsDifference < -SecondsCount / 2)
                 secondsDifference = SecondsCount + secondsDifference;
             
-            Debug.Log($"{fullSecondsCount} || {PrevFullSeconds} || {secondsDifference}");
+            // Debug.Log($"{fullSecondsCount} || {PrevFullSeconds} || {secondsDifference}");
             PrevFullSeconds = fullSecondsCount;
             
             ApplyTime(secondsDifference);

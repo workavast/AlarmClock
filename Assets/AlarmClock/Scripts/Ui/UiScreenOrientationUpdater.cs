@@ -9,7 +9,7 @@ namespace AlarmClock.Scripts.Ui
 
         private void Awake()
         {
-            _screens = GetComponentsInChildren<UiScreenBase>();
+            _screens = GetComponentsInChildren<UiScreenBase>(true);
         }
 
         private void Start()

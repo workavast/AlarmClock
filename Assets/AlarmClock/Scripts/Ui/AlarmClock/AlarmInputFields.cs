@@ -120,6 +120,7 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
                 if (isActive)
                 {
                     _prepareAlarmClockProvider.PreparedAlarmTime.OnTick += PrintTime;
+                    PrintTime();
                 
                     HoursInput.onValueChanged.AddListener(OnUpdateInput);
                     MinutesInput.onValueChanged.AddListener(OnUpdateInput);
@@ -127,7 +128,6 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
                 
                     ToggleInteractive(true);
                     OnUpdateInput(null);
-                    PrintTime();
                 }
                 else
                 {

@@ -11,10 +11,8 @@ namespace Avastrad.UI.UiSystem
         private void Awake()
         {
             _screenRepository = GetComponentInChildren<ScreensRepository>();
-        }
-
-        private void Start()
-        {
+            
+            _screenRepository.Initialize();
             foreach (var screen in _screenRepository.Screens) 
                 screen.Initialize();
         }
