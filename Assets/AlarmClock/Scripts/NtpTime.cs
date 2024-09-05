@@ -13,9 +13,12 @@ namespace AlarmClock.Scripts
         private const string NtpServer2 = "ntp3.ntp-servers.net";
         private const string NtpServer3 = "3.ru.pool.ntp.org";
 
-        public static async Task<ClockTime> GetNetworkTime()
+        private const int SendTimeOut = 200;
+        private const int ReceiveTimeOut = 200;
+        
+        public static async Task<ClockTime> GetNetworkClockTime()
         {
-            var dateTime = await GetNetworkDateTime();
+            var dateTime = await GetLocalNetworkDateTime();
 
             var unixTime = ((DateTimeOffset)dateTime).ToUnixTimeSeconds();
             return new ClockTime(unixTime)
@@ -24,6 +27,12 @@ namespace AlarmClock.Scripts
                 Minutes = dateTime.Minute,
                 Seconds = dateTime.Second
             };
+        }
+
+        public static async Task<DateTime> GetLocalNetworkDateTime()
+        {
+            var dateTime = await GetNetworkDateTime();
+            return dateTime.ToLocalTime();
         }
         
         public static async Task<DateTime> GetNetworkDateTime()
@@ -75,7 +84,7 @@ namespace AlarmClock.Scripts
 
                 using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
                 {
-                    socket.SendTimeout = 100;
+                    socket.SendTimeout = SendTimeOut;
 
                     var connectTask = socket.ConnectAsync(ipEndPoint);
                     await connectTask;
@@ -88,7 +97,7 @@ namespace AlarmClock.Scripts
                         throw new Exception($"Some problem with sendTask: {sendTask.Exception?.Message}");
 
                     var receiveTask = socket.ReceiveAsync(new ArraySegment<byte>(ntpData), SocketFlags.None);
-                    await Task.WhenAny(receiveTask, Task.Delay(100)); //socket.ReceiveTimeout doesnt work with socket.ReceiveAsync(...)
+                    await Task.WhenAny(receiveTask, Task.Delay(ReceiveTimeOut)); //socket.ReceiveTimeout doesnt work with socket.ReceiveAsync(...)
                     if (!receiveTask.IsCompletedSuccessfully)
                         throw new Exception($"Some problem with receiveTask: {receiveTask.Exception?.Message}");
                 }
@@ -99,7 +108,8 @@ namespace AlarmClock.Scripts
                                 (ulong)ntpData[47];
 
                 var milliseconds = (intPart * 1000) + ((fractPart * 1000) / 0x100000000L);
-                var networkDateTime = (new DateTime(1900, 1, 1)).AddMilliseconds((long)milliseconds);
+                var networkDateTime = (new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+                    .AddMilliseconds((long)milliseconds);
 
                 return (true, networkDateTime);
             }

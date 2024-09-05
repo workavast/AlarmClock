@@ -18,7 +18,7 @@ namespace AlarmClock.Scripts
 
         private async void UpdateTime()
         {
-            ClockTime.SetTime(await NtpTime.GetNetworkTime());
+            ClockTime.SetTime(await NtpTime.GetNetworkClockTime());
             _targetTimeToUpdateNtpTime = ClockTime.CurrentUnixSeconds + ClockTime.SecondsInHour;
             if (!IsInitialized)
             {
