@@ -3284,6 +3284,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c317ca276742c0b5c49c6820fa7ad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  portraitCanvas: {fileID: 1187096317}
+  landscapeCanvas: {fileID: 1948783457}
 --- !u!1 &603082490
 GameObject:
   m_ObjectHideFlags: 0
@@ -11742,7 +11744,7 @@ GameObject:
   - component: {fileID: 1948783456}
   - component: {fileID: 1948783455}
   m_Layer: 5
-  m_Name: PortraitAlarmNotification (1)
+  m_Name: LandscapetAlarmNotification
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
