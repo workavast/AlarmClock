@@ -62,7 +62,6 @@ namespace AlarmClock.Scripts
 
             if (_clockTimeProvider.ClockTime.CurrentUnixSeconds >= TargetUnixTime)
             {
-                Debug.Log("ALARM");
                 SetAlarm(TargetTime);
                 OnAlarm?.Invoke();
             }
