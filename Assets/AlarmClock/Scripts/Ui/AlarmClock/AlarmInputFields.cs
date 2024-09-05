@@ -159,13 +159,13 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
             private void OnUpdateInput(string str)
             {
                 if (!int.TryParse(HoursInput.text, out var hoursValue) || hoursValue >= 24)
-                    HoursInput.SetTextWithoutNotify("00");
+                    HoursInput.SetTextWithoutNotify("23");
 
                 if (!int.TryParse(MinutesInput.text, out var minuteValue) || minuteValue >= 60)
-                    MinutesInput.SetTextWithoutNotify("00");
+                    MinutesInput.SetTextWithoutNotify("59");
 
                 if (!int.TryParse(SecondsInput.text, out var secondsValue) || secondsValue >= 60)
-                    SecondsInput.SetTextWithoutNotify("00");
+                    SecondsInput.SetTextWithoutNotify("59");
                 
                 ApplyInput();
             }
