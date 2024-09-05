@@ -89,14 +89,8 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
                 PrintTime(SecondsInput, _alarmClockProvider.TargetTime.Seconds);
             }
 
-            private static void PrintTime(TMP_InputField inputField, int value)
-            {
-                var valueText = "";
-                if (value < 10)
-                    valueText = "0";
-
-                inputField.SetTextWithoutNotify(valueText + value);
-            }
+            private static void PrintTime(TMP_InputField inputField, int value) 
+                => inputField.SetTextWithoutNotify($"{value:d2}");
         }
 
         private class InputState : AlarmInputFieldsState
@@ -126,6 +120,10 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
                     MinutesInput.onValueChanged.AddListener(OnUpdateInput);
                     SecondsInput.onValueChanged.AddListener(OnUpdateInput);
                 
+                    HoursInput.onDeselect.AddListener(ValidateInputsFormats);
+                    MinutesInput.onDeselect.AddListener(ValidateInputsFormats);
+                    SecondsInput.onDeselect.AddListener(ValidateInputsFormats);
+                    
                     ToggleInteractive(true);
                     OnUpdateInput(null);
                 }
@@ -134,6 +132,10 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
                     HoursInput.onValueChanged.RemoveListener(OnUpdateInput);
                     MinutesInput.onValueChanged.RemoveListener(OnUpdateInput);
                     SecondsInput.onValueChanged.RemoveListener(OnUpdateInput);
+                    
+                    HoursInput.onDeselect.RemoveListener(ValidateInputsFormats);
+                    MinutesInput.onDeselect.RemoveListener(ValidateInputsFormats);
+                    SecondsInput.onDeselect.RemoveListener(ValidateInputsFormats);
                 }
             }
             
@@ -148,12 +150,8 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
             {
                 if (inputField.isFocused)
                     return;
-                
-                var valueText = "";
-                if (value < 10)
-                    valueText = "0";
 
-                inputField.SetTextWithoutNotify(valueText + value);
+                inputField.SetTextWithoutNotify($"{value:d2}");
             }
             
             private void OnUpdateInput(string str)
@@ -170,6 +168,13 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
                 ApplyInput();
             }
 
+            private void ValidateInputsFormats(string str)
+            {
+                HoursInput.SetTextWithoutNotify($"{int.Parse(HoursInput.text):d2}");
+                MinutesInput.SetTextWithoutNotify($"{int.Parse(MinutesInput.text):d2}");
+                SecondsInput.SetTextWithoutNotify($"{int.Parse(SecondsInput.text):d2}");
+            }
+            
             private void ApplyInput()
             {
                 var clockTime = new ClockTime();
