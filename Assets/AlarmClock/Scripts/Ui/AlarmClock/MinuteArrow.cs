@@ -10,9 +10,10 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
         {
             if (IsDrag)
                 return;
-        
-            PrevFullSeconds = PrepareAlarmClockProvider.PreparedAlarmTime.SecondsInMinutes + PrepareAlarmClockProvider.PreparedAlarmTime.Seconds;
-            var angle = GetRoundAngle(PrevFullSeconds);
+
+            PrevFullSeconds = PrepareAlarmClockProvider.PreparedAlarmTime.SecondsInMinutes +
+                              PrepareAlarmClockProvider.PreparedAlarmTime.Seconds;
+            var angle = RoundAngle(PrevFullSeconds);
             
             transform.rotation = Quaternion.Euler(0,0, 360 - angle);
         }

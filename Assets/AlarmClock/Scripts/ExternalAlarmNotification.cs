@@ -1,7 +1,7 @@
 using Unity.Notifications.Android;
 using UnityEngine;
 
-namespace AlarmClock.Scripts.Ui
+namespace AlarmClock.Scripts
 {
     public class ExternalAlarmNotification : MonoBehaviour
     {
@@ -17,8 +17,7 @@ namespace AlarmClock.Scripts.Ui
             _clockTimeProvider = FindObjectOfType<ClockTimeProvider>();
             _alarmClockProvider = FindObjectOfType<AlarmClockProvider>();
 
-            if (_notificationIsSend)
-                CancelExternalNotification();
+            CancelNotification();
         }
 
         private void OnApplicationFocus(bool hasFocus)
@@ -26,30 +25,30 @@ namespace AlarmClock.Scripts.Ui
             if (!hasFocus)
             {
                 if (!_notificationIsSend) 
-                    TrySendExternalNotification();
+                    TrySendNotification();
             }
             else
             {
                 if (_notificationIsSend) 
-                    CancelExternalNotification();
+                    CancelNotification();
             }
         }
 
         private void OnApplicationQuit()
         {
             if(!_notificationIsSend)
-                TrySendExternalNotification();
+                TrySendNotification();
         }
 
-        private void TrySendExternalNotification()
+        private void TrySendNotification()
         {
             if (!_alarmClockProvider.IsActive)
                 return;
             
-            SendExternalNotification();
+            SendNotification();
         }
         
-        private void SendExternalNotification()
+        private void SendNotification()
         {
             var channel = new AndroidNotificationChannel()
             {
@@ -65,15 +64,15 @@ namespace AlarmClock.Scripts.Ui
                 Title = "Будильник!",
                 Text = "Будильник сработал!",
                 
-                FireTime = System.DateTime.Now.AddSeconds(_alarmClockProvider.TargetTime.CurrentUnixSeconds -
-                                                          _clockTimeProvider.ClockTime.CurrentUnixSeconds)
+                FireTime = System.DateTime.Now.AddSeconds(_alarmClockProvider.TargetTime.UnixSeconds -
+                                                          _clockTimeProvider.ClockTime.UnixSeconds)
             };
 
             AndroidNotificationCenter.SendNotificationWithExplicitID(notification, ChanelId, NotificationId);
             _notificationIsSend = true;
         }
 
-        private void CancelExternalNotification()
+        private void CancelNotification()
         {
             AndroidNotificationCenter.CancelNotification(NotificationId);
             _notificationIsSend = false;

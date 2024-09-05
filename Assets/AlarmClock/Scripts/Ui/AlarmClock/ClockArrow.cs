@@ -6,8 +6,8 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
     public abstract class ClockArrow : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         protected PrepareAlarmClockProvider PrepareAlarmClockProvider;
-        protected bool IsDrag;
         protected int PrevFullSeconds;
+        protected bool IsDrag;
         
         protected abstract int SecondsCount { get; }
         public bool Interactable { get; set; } = true;
@@ -43,34 +43,22 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
             var dragDir = (dragPos - (Vector2)transform.position).normalized;
             
             var newAngle = Vector2.Angle(Vector2.up, dragDir);
-            var secondsCount = GetSecondsCount(newAngle);
-            
-            
-            var fullSecondsCount = 0;
-            if (dragDir.x < 0) 
-                fullSecondsCount = SecondsCount - secondsCount;
-            else
-                fullSecondsCount = secondsCount;
+            var angleSecondsCount = GetSecondsCount(newAngle);//number of seconds in angle (angle in diapason (-180; 180)),
+                                                              //so it cant be more then half of full seconds count)
 
-            if (fullSecondsCount == SecondsCount) 
-                fullSecondsCount = 0;
-
+            var fullSecondsCount = GetFullSecondsCount(dragDir, angleSecondsCount);
             if (fullSecondsCount == PrevFullSeconds)
                 return;
 
-            newAngle = GetRoundAngle(secondsCount);
+            newAngle = RoundAngle(angleSecondsCount);
             if (dragDir.x > 0)
                 newAngle *= -1;
-            var eulerAngles = transform.eulerAngles;
-            transform.rotation = Quaternion.Euler(eulerAngles.x, eulerAngles.y, newAngle);
             
-            var secondsDifference = fullSecondsCount - PrevFullSeconds;
-            if (secondsDifference > SecondsCount / 2)
-                secondsDifference = -(SecondsCount - secondsDifference);
-            if (secondsDifference < -SecondsCount / 2)
-                secondsDifference = SecondsCount + secondsDifference;
+            var currentEulerAngles = transform.eulerAngles;
+            transform.rotation = Quaternion.Euler(currentEulerAngles.x, currentEulerAngles.y, newAngle);
+
+            var secondsDifference = CalculateSecondsDifference(fullSecondsCount, PrevFullSeconds);
             
-            // Debug.Log($"{fullSecondsCount} || {PrevFullSeconds} || {secondsDifference}");
             PrevFullSeconds = fullSecondsCount;
             
             ApplyTime(secondsDifference);
@@ -78,26 +66,51 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
         
         protected abstract void TryUpdateView();
         
+        protected float RoundAngle(int stepsCount)
+        {
+            var angleStep = (float)360 / SecondsCount;
+            var roundedAngle = angleStep * stepsCount;
+            return roundedAngle;
+        }
+        
         private int GetSecondsCount(float angle)
         {
-            var step = (float)360 / SecondsCount;
+            var angleStep = (float)360 / SecondsCount;
             
-            var stepsCount = (int)(angle / step);
+            var stepsCount = (int)(angle / angleStep);
             
-            var dif = angle % step;
-            if (dif / step >= 0.5f) 
+            var remainderAngle = angle % angleStep;
+            if (remainderAngle / angleStep >= 0.5f) 
                 stepsCount += 1;
 
             return stepsCount;   
         }
-        
-        protected float GetRoundAngle(int stepsCount)
+
+        private int GetFullSecondsCount(Vector2 dragDir, int angleSecondsCount)
         {
-            var step = (float)360 / SecondsCount;
-            var returnAngle = step * stepsCount;
-            return returnAngle;
+            var fullSecondsCount = 0;
+            if (dragDir.x < 0)
+                fullSecondsCount = SecondsCount - angleSecondsCount;
+            else
+                fullSecondsCount = angleSecondsCount;
+
+            if (fullSecondsCount == SecondsCount) 
+                fullSecondsCount = 0;
+
+            return fullSecondsCount;
         }
 
+        private int CalculateSecondsDifference(int fullSecondsCount, int prevFullSeconds)
+        {
+            var secondsDifference = fullSecondsCount - prevFullSeconds;
+            if (secondsDifference > SecondsCount / 2)
+                secondsDifference = -(SecondsCount - secondsDifference);
+            if (secondsDifference < -SecondsCount / 2)
+                secondsDifference = SecondsCount + secondsDifference;
+
+            return secondsDifference;
+        }
+        
         private void ApplyTime(int seconds)
         {
             PrepareAlarmClockProvider.PreparedAlarmTime.ChangeSeconds(seconds);

@@ -19,14 +19,7 @@ namespace AlarmClock.Scripts
         public static async Task<ClockTime> GetNetworkClockTime()
         {
             var dateTime = await GetLocalNetworkDateTime();
-
-            var unixTime = ((DateTimeOffset)dateTime).ToUnixTimeSeconds();
-            return new ClockTime(unixTime)
-            {
-                Hours = dateTime.Hour,
-                Minutes = dateTime.Minute,
-                Seconds = dateTime.Second
-            };
+            return new ClockTime(dateTime);
         }
 
         public static async Task<DateTime> GetLocalNetworkDateTime()

@@ -6,9 +6,7 @@ namespace AlarmClock.Scripts.Ui
     {
         [SerializeField] private float rotationSpeed = 1;
 
-        private void Update()
-        {
-            transform.Rotate(Vector3.back * (rotationSpeed * Time.deltaTime));
-        }
+        private void Update() 
+            => transform.Rotate(Vector3.back * (rotationSpeed * Time.deltaTime));
     }
 }

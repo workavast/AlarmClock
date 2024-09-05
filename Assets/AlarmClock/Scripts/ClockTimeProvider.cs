@@ -19,7 +19,7 @@ namespace AlarmClock.Scripts
         private async void UpdateTime()
         {
             ClockTime.SetTime(await NtpTime.GetNetworkClockTime());
-            _targetTimeToUpdateNtpTime = ClockTime.CurrentUnixSeconds + ClockTime.SecondsInHour;
+            _targetTimeToUpdateNtpTime = ClockTime.UnixSeconds + ClockTime.SecondsInHour;
             if (!IsInitialized)
             {
                 IsInitialized = true;
@@ -33,11 +33,11 @@ namespace AlarmClock.Scripts
 
             if (_secondsCounter > 1)
             {
-                var secs = (int)_secondsCounter;
-                _secondsCounter -= secs;
-                ClockTime.ChangeSeconds(secs);
+                var seconds = (int)_secondsCounter;
+                _secondsCounter -= seconds;
+                ClockTime.ChangeSeconds(seconds);
 
-                if (IsInitialized && _targetTimeToUpdateNtpTime <= ClockTime.CurrentUnixSeconds) 
+                if (IsInitialized && _targetTimeToUpdateNtpTime <= ClockTime.UnixSeconds) 
                     UpdateTime();
             }
         }

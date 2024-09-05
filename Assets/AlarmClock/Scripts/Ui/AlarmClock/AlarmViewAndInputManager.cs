@@ -3,11 +3,11 @@ using UnityEngine.UI;
 
 namespace AlarmClock.Scripts.Ui.AlarmClock
 {
-    public class AlarmViewManager : MonoBehaviour
+    public class AlarmViewAndInputManager : MonoBehaviour
     {
         [SerializeField] private Button applyAlarm;
         [SerializeField] private Button cancelAlarm;
-        
+        [Space]
         [SerializeField] private AlarmInputFields alarmInputFields;
         [SerializeField] private AlarmClockInput alarmClockInput;
      
@@ -49,14 +49,10 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
             alarmClockInput.ToggleState(!alarmIsActive);
         }
         
-        private void OnApplyAlarm()
-        {
-            _alarmClockProvider.SetAlarm(_prepareAlarmClockProvider.PreparedAlarmTime);
-        }
-        
-        private void OnCancelAlarm()
-        {
-            _alarmClockProvider.CancelAlarm();
-        }
+        private void OnApplyAlarm() 
+            => _alarmClockProvider.SetAlarm(_prepareAlarmClockProvider.PreparedAlarmTime);
+
+        private void OnCancelAlarm() 
+            => _alarmClockProvider.CancelAlarm();
     }
 }

@@ -58,7 +58,7 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
             private readonly AlarmClockProvider _alarmClockProvider;
 
             public ViewState(AlarmClockProvider alarmClockProvider, TMP_InputField hoursInput, TMP_InputField minutesInput, TMP_InputField secondsInput) 
-                : base( hoursInput,  minutesInput, secondsInput)
+                : base(hoursInput,  minutesInput, secondsInput)
             {
                 _alarmClockProvider = alarmClockProvider;
             }
@@ -69,7 +69,7 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
                     return;
 
                 IsActive = isActive;
-                if (isActive)
+                if (IsActive)
                 {
                     _alarmClockProvider.TargetTime.OnTick += PrintTime;
                 
@@ -114,7 +114,6 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
                 if (isActive)
                 {
                     _prepareAlarmClockProvider.PreparedAlarmTime.OnTick += PrintTime;
-                    PrintTime();
                 
                     HoursInput.onValueChanged.AddListener(OnUpdateInput);
                     MinutesInput.onValueChanged.AddListener(OnUpdateInput);
@@ -124,11 +123,14 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
                     MinutesInput.onDeselect.AddListener(ValidateInputsFormats);
                     SecondsInput.onDeselect.AddListener(ValidateInputsFormats);
                     
-                    ToggleInteractive(true);
+                    PrintTime();
                     OnUpdateInput(null);
+                    ToggleInteractive(true);
                 }
                 else
                 {
+                    _prepareAlarmClockProvider.PreparedAlarmTime.OnTick -= PrintTime;
+
                     HoursInput.onValueChanged.RemoveListener(OnUpdateInput);
                     MinutesInput.onValueChanged.RemoveListener(OnUpdateInput);
                     SecondsInput.onValueChanged.RemoveListener(OnUpdateInput);
@@ -178,8 +180,8 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
             private void ApplyInput()
             {
                 var clockTime = new ClockTime();
-                clockTime.AddHours(int.Parse(HoursInput.text));
-                clockTime.AddMinutes(int.Parse(MinutesInput.text));
+                clockTime.ChangeSeconds(int.Parse(HoursInput.text) * ClockTime.SecondsInHour);
+                clockTime.ChangeSeconds(int.Parse(MinutesInput.text) * ClockTime.SecondsInMinute);
                 clockTime.ChangeSeconds(int.Parse(SecondsInput.text));
                 _prepareAlarmClockProvider.PreparedAlarmTime.SetTime(clockTime);
             }

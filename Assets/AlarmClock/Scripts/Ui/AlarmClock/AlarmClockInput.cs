@@ -10,7 +10,7 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
         
         private AlarmClockProvider _alarmClockProvider;
         private PrepareAlarmClockProvider _prepareAlarmClockProvider;
-        private bool IsInputState;
+        private bool _isInputState;
         
         public void Initialize()
         {
@@ -36,10 +36,10 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
 
         public void ToggleState(bool inputState)
         {
-            if (IsInputState == inputState)
+            if (_isInputState == inputState)
                 return;
 
-            IsInputState = inputState;
+            _isInputState = inputState;
             hourArrow.Interactable = inputState;
             minuteArrow.Interactable = inputState;
             secondArrow.Interactable = inputState;
@@ -48,11 +48,9 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
         
         private void UpdateView()
         {
-            ClockTime clockTime;
-            if (IsInputState)
-                clockTime = _prepareAlarmClockProvider.PreparedAlarmTime;
-            else
-                clockTime = _alarmClockProvider.TargetTime;
+            var clockTime = _isInputState
+                ? _prepareAlarmClockProvider.PreparedAlarmTime
+                : _alarmClockProvider.TargetTime;
             
             RotateArrow(hourArrow.gameObject, clockTime.FullDayPercentage * 2);
             RotateArrow(minuteArrow.gameObject, clockTime.HourPercentage);

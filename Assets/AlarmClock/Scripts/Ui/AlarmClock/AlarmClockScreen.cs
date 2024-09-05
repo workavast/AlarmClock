@@ -4,7 +4,7 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
     {
         public override void Initialize()
         {
-            var alarmViewManagers = GetComponentsInChildren<AlarmViewManager>(true);
+            var alarmViewManagers = GetComponentsInChildren<AlarmViewAndInputManager>(true);
             foreach (var alarmViewManager in alarmViewManagers)
                 alarmViewManager.Initialize();
         }

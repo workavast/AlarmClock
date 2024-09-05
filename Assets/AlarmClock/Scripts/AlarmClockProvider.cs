@@ -7,7 +7,7 @@ namespace AlarmClock.Scripts
     {
         private ClockTimeProvider _clockTimeProvider;
         public readonly ClockTime TargetTime = new();
-        public long TargetUnixTime => TargetTime.CurrentUnixSeconds;
+        public long TargetUnixTime => TargetTime.UnixSeconds;
         
         public bool IsActive { get; private set; }
         public event Action OnActivationStateChange;
@@ -37,7 +37,7 @@ namespace AlarmClock.Scripts
             if (difference < 0) 
                 difference += ClockTime.SecondsInDay;
 
-            var targetUnixTime = _clockTimeProvider.ClockTime.CurrentUnixSeconds + difference;
+            var targetUnixTime = _clockTimeProvider.ClockTime.UnixSeconds + difference;
             TargetTime.SetTime(targetUnixTime, alarmClock);
 
             if (prevActiveState != IsActive) 
@@ -60,7 +60,7 @@ namespace AlarmClock.Scripts
             if (!IsActive)
                 return;
 
-            if (_clockTimeProvider.ClockTime.CurrentUnixSeconds >= TargetUnixTime)
+            if (_clockTimeProvider.ClockTime.UnixSeconds >= TargetUnixTime)
             {
                 SetAlarm(TargetTime);
                 OnAlarm?.Invoke();

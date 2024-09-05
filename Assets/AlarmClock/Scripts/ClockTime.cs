@@ -8,11 +8,10 @@ namespace AlarmClock.Scripts
         public const int SecondsInHour = 60 * 60;
         public const int SecondsInMinute = 60;
         
-        public long InitialUnixSeconds { get; private set; }
-        public long CurrentUnixSeconds { get; private set; }
-        public int Hours;
-        public int Minutes;
-        public int Seconds;
+        public long UnixSeconds { get; private set; }
+        public int Hours { get; private set; }
+        public int Minutes { get; private set; }
+        public int Seconds { get; private set; }
 
         public float FullDayPercentage => (float)TotalSeconds / SecondsInDay;
         public float HourPercentage => (float)(SecondsInMinutes + Seconds) / SecondsInHour;
@@ -24,15 +23,22 @@ namespace AlarmClock.Scripts
         
         public event Action OnTick;
 
-        public ClockTime() 
-            => InitialUnixSeconds = CurrentUnixSeconds = 0;
-
-        public ClockTime(long initialUnixSeconds)
-            => InitialUnixSeconds = CurrentUnixSeconds = initialUnixSeconds;
-
-        public void SetTime(long initialUnixSeconds, ClockTime clockTime)
+        public ClockTime()
         {
-            InitialUnixSeconds = CurrentUnixSeconds = initialUnixSeconds;
+            
+        }
+        
+        public ClockTime(DateTime dateTime)
+        {
+            UnixSeconds = ((DateTimeOffset)dateTime).ToUnixTimeSeconds();
+            Hours = dateTime.Hour;
+            Minutes = dateTime.Minute;
+            Seconds = dateTime.Second;
+        }
+
+        public void SetTime(long unixSeconds, ClockTime clockTime)
+        {
+            UnixSeconds = unixSeconds;
             Hours = clockTime.Hours;
             Minutes = clockTime.Minutes;
             Seconds = clockTime.Seconds;
@@ -41,8 +47,7 @@ namespace AlarmClock.Scripts
         
         public void SetTime(ClockTime clockTime)
         {
-            InitialUnixSeconds = clockTime.InitialUnixSeconds;
-            CurrentUnixSeconds = clockTime.CurrentUnixSeconds;
+            UnixSeconds = clockTime.UnixSeconds;
             Hours = clockTime.Hours;
             Minutes = clockTime.Minutes;
             Seconds = clockTime.Seconds;
@@ -62,7 +67,7 @@ namespace AlarmClock.Scripts
 
         private void AddSeconds(int seconds)
         {
-            CurrentUnixSeconds += seconds;
+            UnixSeconds += seconds;
             Seconds += seconds;
             if (Seconds >= 60)
             {
@@ -75,10 +80,34 @@ namespace AlarmClock.Scripts
                 OnTick?.Invoke();
             }
         }
+        
+        private void AddMinutes(int minutes)
+        {
+            Minutes += minutes;
+            if (Minutes >= 60)
+            {
+                var hours = Minutes / 60;
+                Minutes -= 60 * hours;
+                AddHours(hours);
+            }
+            else
+            {
+                OnTick?.Invoke();
+            }
+        }
 
+        private void AddHours(int hours)
+        {
+            Hours += hours;
+            if (Hours >= 24)
+                Hours %= 24;
+
+            OnTick?.Invoke();
+        }
+        
         private void RemoveSeconds(int seconds)
         {
-            CurrentUnixSeconds -= seconds;
+            UnixSeconds -= seconds;
             Seconds -= seconds;
             if (Seconds < 0)
             {
@@ -128,49 +157,7 @@ namespace AlarmClock.Scripts
             OnTick?.Invoke();
         }
         
-        public void AddMinutes(int minutes)
-        {
-            Minutes += minutes;
-            if (Minutes >= 60)
-            {
-                var hours = Minutes / 60;
-                Minutes -= 60 * hours;
-                AddHours(hours);
-            }
-            else
-            {
-                OnTick?.Invoke();
-            }
-        }
-
-        public void AddHours(int hours)
-        {
-            Hours += hours;
-            if (Hours >= 24)
-                Hours %= 24;
-
-            OnTick?.Invoke();
-        }
-        
         public override string ToString() 
-            => $"{Hours}:{Minutes}:{Seconds}";
-
-        public static bool operator >=(ClockTime clockTimeLeft, ClockTime clockTimeRight)
-        {
-            if (clockTimeLeft is null && clockTimeRight is null)
-                return true;
-            if (clockTimeLeft is null)
-                return false;
-            if (clockTimeRight is null)
-                return true;
-
-            return clockTimeLeft.CurrentUnixSeconds >= clockTimeRight.CurrentUnixSeconds &&
-                   clockTimeLeft.Hours >= clockTimeRight.Hours &&
-                   clockTimeLeft.Minutes == clockTimeRight.Minutes &&
-                   clockTimeLeft.Seconds == clockTimeRight.Seconds;
-        }
-
-        public static bool operator <=(ClockTime clockTimeLeft, ClockTime clockTimeRight) 
-            => !(clockTimeLeft >= clockTimeRight);
+            => $"{Hours:d2}:{Minutes:d2}:{Seconds:d2}";
     }
 }

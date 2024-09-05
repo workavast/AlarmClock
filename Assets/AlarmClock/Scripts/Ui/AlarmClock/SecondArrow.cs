@@ -12,7 +12,7 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
                 return;
         
             PrevFullSeconds = PrepareAlarmClockProvider.PreparedAlarmTime.Seconds;
-            var angle = GetRoundAngle(PrevFullSeconds);
+            var angle = RoundAngle(PrevFullSeconds);
             
             transform.rotation = Quaternion.Euler(0,0, 360 - angle);
         }

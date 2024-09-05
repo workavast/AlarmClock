@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace AlarmClock.Scripts.Ui
 {
-    public class AlarmNotificationHolder : MonoBehaviour
+    public class AlarmNotificationScreenHolder : MonoBehaviour
     {
-        [SerializeField] private GameObject alarmNotification;
+        [SerializeField] private GameObject alarmNotificationScreen;
         
         private AlarmClockProvider _alarmClockProvider;
         
@@ -14,14 +14,10 @@ namespace AlarmClock.Scripts.Ui
             _alarmClockProvider.OnAlarm += Show;
         }
 
-        private void Show()
-        {
-            alarmNotification.SetActive(true);
-        }
+        private void Show() 
+            => alarmNotificationScreen.SetActive(true);
 
-        public void Hide()
-        {
-            alarmNotification.SetActive(false);
-        }
+        public void Hide() 
+            => alarmNotificationScreen.SetActive(false);
     }
 }
