@@ -34,7 +34,7 @@ namespace AlarmClock.Scripts
             var prevActiveState = IsActive;
             IsActive = true;
             var difference = alarmClock.TotalSeconds - _clockTimeProvider.ClockTime.TotalSeconds;
-            if (difference < 0) 
+            if (difference <= 0) 
                 difference += ClockTime.SecondsInDay;
 
             var targetUnixTime = _clockTimeProvider.ClockTime.UnixSeconds + difference;
