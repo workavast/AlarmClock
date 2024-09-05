@@ -11,6 +11,7 @@ namespace AlarmClock.Scripts
         
         public bool IsActive { get; private set; }
         public event Action OnActivationStateChange;
+        public event Action OnAlarm;
         
         private void Awake()
         {
@@ -61,9 +62,9 @@ namespace AlarmClock.Scripts
 
             if (_clockTimeProvider.ClockTime.CurrentUnixSeconds >= TargetUnixTime)
             {
-                IsActive = false;
                 Debug.Log("ALARM");
-                OnActivationStateChange?.Invoke();
+                SetAlarm(TargetTime);
+                OnAlarm?.Invoke();
             }
         }
     }
