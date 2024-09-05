@@ -5,9 +5,6 @@ namespace AlarmClock.Scripts
 {
     public class AlarmClockProvider : MonoBehaviour
     {
-        [SerializeField] private int hours;
-        [SerializeField] private int minutes;
-
         private ClockTimeProvider _clockTimeProvider;
         public readonly ClockTime TargetTime = new();
         public long TargetUnixTime => TargetTime.CurrentUnixSeconds;
