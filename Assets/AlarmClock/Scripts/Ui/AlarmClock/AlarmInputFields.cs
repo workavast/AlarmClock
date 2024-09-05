@@ -9,15 +9,15 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
         [SerializeField] private TMP_InputField minutesInput;
         [SerializeField] private TMP_InputField secondsInput;
 
-        private AlarmClockProvider _alarmClock;
-        private PrepareAlarmClockProvider _prepareAlarmClockProvider;
+        private IAlarmClockProvider _alarmClock;
+        private IPrepareAlarmClockProvider _prepareAlarmClockProvider;
         private InputState _inputState;
         private ViewState _viewState;
 
         public void Initialize()
         {
-            _alarmClock = FindObjectOfType<AlarmClockProvider>();
-            _prepareAlarmClockProvider = FindObjectOfType<PrepareAlarmClockProvider>();
+            _alarmClock = AppData.AlarmClockProvider;
+            _prepareAlarmClockProvider = AppData.PrepareAlarmClockProvider;
             _inputState = new InputState(_prepareAlarmClockProvider, hoursInput, minutesInput, secondsInput);
             _viewState = new ViewState(_alarmClock, hoursInput, minutesInput, secondsInput);
         }
@@ -55,9 +55,9 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
         
         private class ViewState : AlarmInputFieldsState
         {
-            private readonly AlarmClockProvider _alarmClockProvider;
+            private readonly IAlarmClockProvider _alarmClockProvider;
 
-            public ViewState(AlarmClockProvider alarmClockProvider, TMP_InputField hoursInput, TMP_InputField minutesInput, TMP_InputField secondsInput) 
+            public ViewState(IAlarmClockProvider alarmClockProvider, TMP_InputField hoursInput, TMP_InputField minutesInput, TMP_InputField secondsInput) 
                 : base(hoursInput,  minutesInput, secondsInput)
             {
                 _alarmClockProvider = alarmClockProvider;
@@ -95,9 +95,9 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
 
         private class InputState : AlarmInputFieldsState
         {
-            private readonly PrepareAlarmClockProvider _prepareAlarmClockProvider;
+            private readonly IPrepareAlarmClockProvider _prepareAlarmClockProvider;
 
-            public InputState(PrepareAlarmClockProvider prepareAlarmClockProvider, TMP_InputField hoursInput, 
+            public InputState(IPrepareAlarmClockProvider prepareAlarmClockProvider, TMP_InputField hoursInput, 
                 TMP_InputField minutesInput, TMP_InputField secondsInput) 
                 : base( hoursInput,  minutesInput, secondsInput)
             {

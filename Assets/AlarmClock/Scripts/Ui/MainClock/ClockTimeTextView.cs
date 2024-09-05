@@ -6,13 +6,13 @@ namespace AlarmClock.Scripts.Ui.MainClock
     [RequireComponent(typeof(TMP_Text))]
     public class ClockTimeTextView : MonoBehaviour
     {
-        private ClockTimeProvider _clockTimeProvider;
+        private IClockTimeProvider _clockTimeProvider;
         private TMP_Text _text;
         
         private void Awake()
         {
             _text = GetComponent<TMP_Text>();
-            _clockTimeProvider = FindObjectOfType<ClockTimeProvider>();
+            _clockTimeProvider = AppData.ClockTimeProvider;
         }
 
         private void OnEnable()

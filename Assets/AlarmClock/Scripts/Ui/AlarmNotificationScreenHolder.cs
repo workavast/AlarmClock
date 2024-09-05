@@ -6,11 +6,11 @@ namespace AlarmClock.Scripts.Ui
     {
         [SerializeField] private GameObject alarmNotificationScreen;
         
-        private AlarmClockProvider _alarmClockProvider;
+        private IAlarmClockProvider _alarmClockProvider;
         
         private void Awake()
         {
-            _alarmClockProvider = FindObjectOfType<AlarmClockProvider>();
+            _alarmClockProvider = AppData.AlarmClockProvider;
             _alarmClockProvider.OnAlarm += Show;
         }
 

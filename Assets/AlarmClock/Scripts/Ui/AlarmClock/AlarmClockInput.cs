@@ -8,14 +8,14 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
         [SerializeField] private ClockArrow minuteArrow;
         [SerializeField] private ClockArrow secondArrow;
         
-        private AlarmClockProvider _alarmClockProvider;
-        private PrepareAlarmClockProvider _prepareAlarmClockProvider;
+        private IAlarmClockProvider _alarmClockProvider;
+        private IPrepareAlarmClockProvider _prepareAlarmClockProvider;
         private bool _isInputState;
         
         public void Initialize()
         {
-            _alarmClockProvider = FindObjectOfType<AlarmClockProvider>();
-            _prepareAlarmClockProvider = FindObjectOfType<PrepareAlarmClockProvider>();
+            _alarmClockProvider = AppData.AlarmClockProvider;
+            _prepareAlarmClockProvider = AppData.PrepareAlarmClockProvider;
             
             hourArrow.Initialize();
             minuteArrow.Initialize();

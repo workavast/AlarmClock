@@ -1,28 +1,28 @@
 using System;
-using UnityEngine;
 
 namespace AlarmClock.Scripts
 {
-    public class AlarmClockProvider : MonoBehaviour
+    public class AlarmClockProvider : IAlarmClockProvider
     {
-        private ClockTimeProvider _clockTimeProvider;
-        public readonly ClockTime TargetTime = new();
+        private readonly ClockTimeProvider _clockTimeProvider;
+
+        public ClockTime TargetTime { get; } = new();
+        public bool IsActive { get; private set; }
         public long TargetUnixTime => TargetTime.UnixSeconds;
         
-        public bool IsActive { get; private set; }
         public event Action OnActivationStateChange;
         public event Action OnAlarm;
-        
-        private void Awake()
-        {
-            _clockTimeProvider = FindObjectOfType<ClockTimeProvider>();
 
+        public AlarmClockProvider(ClockTimeProvider clockTimeProvider)
+        {
+            _clockTimeProvider = clockTimeProvider;
+            
             if (_clockTimeProvider.IsInitialized)
                 Initialize();
             else
                 _clockTimeProvider.OnInitialized += Initialize;
         }
-
+        
         private void Initialize()
         {
             _clockTimeProvider.OnInitialized -= Initialize;

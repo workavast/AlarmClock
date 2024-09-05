@@ -5,7 +5,7 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
 {
     public abstract class ClockArrow : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
-        protected PrepareAlarmClockProvider PrepareAlarmClockProvider;
+        protected IPrepareAlarmClockProvider PrepareAlarmClockProvider;
         protected int PrevFullSeconds;
         protected bool IsDrag;
         
@@ -14,7 +14,7 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
         
         public void Initialize()
         {
-            PrepareAlarmClockProvider = FindObjectOfType<PrepareAlarmClockProvider>();
+            PrepareAlarmClockProvider = AppData.PrepareAlarmClockProvider;
         }
 
         private void OnEnable()

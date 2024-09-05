@@ -11,13 +11,13 @@ namespace AlarmClock.Scripts.Ui.AlarmClock
         [SerializeField] private AlarmInputFields alarmInputFields;
         [SerializeField] private AlarmClockInput alarmClockInput;
      
-        private PrepareAlarmClockProvider _prepareAlarmClockProvider;
-        private Scripts.AlarmClockProvider _alarmClockProvider;
+        private IPrepareAlarmClockProvider _prepareAlarmClockProvider;
+        private IAlarmClockProvider _alarmClockProvider;
         
         public void Initialize()
         {
-            _alarmClockProvider = FindObjectOfType<AlarmClockProvider>();
-            _prepareAlarmClockProvider = FindObjectOfType<PrepareAlarmClockProvider>();
+            _alarmClockProvider = AppData.AlarmClockProvider;
+            _prepareAlarmClockProvider = AppData.PrepareAlarmClockProvider;
             
             applyAlarm.onClick.AddListener(OnApplyAlarm);
             cancelAlarm.onClick.AddListener(OnCancelAlarm);

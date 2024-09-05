@@ -9,13 +9,13 @@ namespace AlarmClock.Scripts
         private const int NotificationId = 1;
         private bool _notificationIsSend;
 
-        private ClockTimeProvider _clockTimeProvider;
-        private AlarmClockProvider _alarmClockProvider;
+        private IClockTimeProvider _clockTimeProvider;
+        private IAlarmClockProvider _alarmClockProvider;
         
         private void Awake()
         {
-            _clockTimeProvider = FindObjectOfType<ClockTimeProvider>();
-            _alarmClockProvider = FindObjectOfType<AlarmClockProvider>();
+            _clockTimeProvider = AppData.ClockTimeProvider;
+            _alarmClockProvider = AppData.AlarmClockProvider;
 
             CancelNotification();
         }

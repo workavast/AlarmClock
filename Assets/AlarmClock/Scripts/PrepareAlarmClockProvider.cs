@@ -1,11 +1,9 @@
-using UnityEngine;
-
 namespace AlarmClock.Scripts
 {
-    public class PrepareAlarmClockProvider : MonoBehaviour
+    public class PrepareAlarmClockProvider : IPrepareAlarmClockProvider
     {
-        public readonly ClockTime PreparedAlarmTime = new();
-        
+        public ClockTime PreparedAlarmTime { get; }  = new();
+
         public void Reset() 
             => PreparedAlarmTime.SetTime(new ClockTime());
     }

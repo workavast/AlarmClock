@@ -8,10 +8,10 @@ namespace AlarmClock.Scripts.Ui.MainClock
         [SerializeField] private GameObject minuteArrow;
         [SerializeField] private GameObject secondArrow;
         
-        private ClockTimeProvider _clockTimeProvider;
+        private IClockTimeProvider _clockTimeProvider;
 
         private void Awake() 
-            => _clockTimeProvider = FindObjectOfType<ClockTimeProvider>();
+            => _clockTimeProvider = AppData.ClockTimeProvider;
 
         private void OnEnable()
         {

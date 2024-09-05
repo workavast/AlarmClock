@@ -3,19 +3,20 @@ using UnityEngine;
 
 namespace AlarmClock.Scripts
 {
-    public class ClockTimeProvider : MonoBehaviour
+    public class ClockTimeProvider : IClockTimeProvider
     {
-        public readonly ClockTime ClockTime = new();
-
         private float _secondsCounter;
         private long _targetTimeToUpdateNtpTime;
 
+        public ClockTime ClockTime { get; } = new();
         public bool IsInitialized { get; private set; }
         public event Action OnInitialized;
 
-        private void Awake()
-            => UpdateTime();
-
+        public ClockTimeProvider()
+        {
+            UpdateTime();
+        }
+        
         private async void UpdateTime()
         {
             ClockTime.SetTime(await NtpTime.GetNetworkClockTime());
@@ -27,7 +28,7 @@ namespace AlarmClock.Scripts
             }
         }
         
-        private void Update()
+        public void Update()
         {
             _secondsCounter += Time.unscaledDeltaTime;
 
