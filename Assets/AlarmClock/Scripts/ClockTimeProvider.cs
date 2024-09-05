@@ -8,16 +8,18 @@ namespace AlarmClock.Scripts
         public readonly ClockTime ClockTime = new();
 
         private float _secondsCounter;
+        private long _targetTimeToUpdateNtpTime;
 
         public bool IsInitialized { get; private set; }
         public event Action OnInitialized;
 
         private void Awake()
-            => Initialize();
+            => UpdateTime();
 
-        private async void Initialize()
+        private async void UpdateTime()
         {
             ClockTime.SetTime(await NtpTime.GetNetworkTime());
+            _targetTimeToUpdateNtpTime = ClockTime.CurrentUnixSeconds + ClockTime.SecondsInHour;
             if (!IsInitialized)
             {
                 IsInitialized = true;
@@ -34,19 +36,9 @@ namespace AlarmClock.Scripts
                 var secs = (int)_secondsCounter;
                 _secondsCounter -= secs;
                 ClockTime.ChangeSeconds(secs);
-            }
-        }
 
-        [ContextMenu("TakeTime")]
-        private async void TakeTime()
-        {
-            var res = await NtpTime.GetNetworkTime();
-            Debug.Log(res.ToString());
-
-            if (!IsInitialized)
-            {
-                IsInitialized = true;
-                OnInitialized?.Invoke();
+                if (IsInitialized && _targetTimeToUpdateNtpTime <= ClockTime.CurrentUnixSeconds) 
+                    UpdateTime();
             }
         }
     }
